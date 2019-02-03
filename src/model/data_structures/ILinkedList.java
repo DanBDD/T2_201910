@@ -49,4 +49,18 @@ public interface ILinkedList<T> extends Iterable<T>{
 	 */
 	public boolean contiene(Object objeto);
 	
+	/**
+	 * Metodo que elimina nodo en la posicion deseada.
+	 * @param pos: posicion del nodo
+	 * @throws IndexOutOfBoundsException si la posicion es menor que cero o si es mayor o igual que el tamano de la lista
+	 * @return elemento eliminado
+	 */
+	public T eliminarEnPosicion(int pos);
+	
+	/**
+	 * Metodo que elimina el objeto que llega por parametro
+	 * @param objeto: objeto que se busca eliminar
+	 * @return true si se elimio el objeto, false de lo contrario
+	 */
+	public boolean eliminarObjetoEspecifico(Object objeto);
 }

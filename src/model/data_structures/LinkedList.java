@@ -195,6 +195,116 @@ public class LinkedList<T> implements ILinkedList<T> {
 		return contiene;
 	}
 
+	/**
+	 * Metodo que elimina nodo en la posicion deseada.
+	 * @param pos: posicion del nodo
+	 * @throws IndexOutOfBoundsException si la posicion es menor que cero o si es mayor o igual que el tamano de la lista
+	 * @return elemento eliminado
+	 */
+	@Override
+	public T eliminarEnPosicion(int pos) {
+		
+		T eliminado = null;
+		
+		if(pos<0 || pos >= numElementos-1){
+			throw new IndexOutOfBoundsException();
+		}
+		
+		else{
+			
+			Nodo<T>actual = primerNodo;
+			
+			if(pos == 0){
+				eliminado = primerNodo.darElementoNodo();
+				if(primerNodo.darSiguiente() == null){
+					primerNodo = null;
+				}
+				else{
+					Nodo<T> nuevoPrimero = primerNodo.darSiguiente();
+					primerNodo = nuevoPrimero;
+					nuevoPrimero.cambiarAnterior(null);
+				}
+				numElementos--;
+						
+			}
+			else if(pos == numElementos-1){
+				Nodo<T>nuevoUltimo = ultimoNodo.darAnterior();
+				eliminado = ultimoNodo.darElementoNodo();
+				nuevoUltimo.cambiarSiguiente(null);
+				numElementos--;
+			}
+			else{
+				int i = 0;
+				
+				while(i<pos-1){
+					
+					i++;
+					actual = actual.darSiguiente();
+				}
+				Nodo<T> siguienteNuevo = actual.darSiguiente().darSiguiente();
+				eliminado = actual.darSiguiente().darElementoNodo();
+				actual.cambiarSiguiente(siguienteNuevo);
+				numElementos--;
+			}
+		}
+		
+		return eliminado;
+	}
+
+	/**
+	 * Metodo que elimina el objeto que llega por parametro
+	 * @param objeto: objeto que se busca eliminar
+	 * @return true si se elimio el objeto, false de lo contrario
+	 */
+	@Override
+	public boolean eliminarObjetoEspecifico(Object objeto) {
+
+		boolean eliminado = false;
+		
+		if(primerNodo != null){
+			if(contiene(objeto)){
+				
+				int i = 0;
+				Nodo<T>actual = primerNodo;
+				
+				while(i<numElementos-1 && !eliminado){
+					
+					if(actual.darElementoNodo().equals(objeto)){
+						if(numElementos-1 == 0){
+							primerNodo = null;
+							numElementos--;
+							eliminado = true;
+						}
+						else{
+							Nodo<T> nuevoPrimero = primerNodo.darSiguiente();
+							primerNodo = nuevoPrimero;
+							nuevoPrimero.cambiarAnterior(null);
+							numElementos--;
+							eliminado = true;
+						}
+					}
+					else if(i == numElementos - 1){
+						Nodo<T>nuevoUltimo = ultimoNodo.darAnterior();
+						nuevoUltimo.cambiarSiguiente(null);
+						numElementos--;
+						eliminado = true;
+					}
+					else{
+						if(actual.darElementoNodo().equals(actual.darSiguiente().darElementoNodo())){
+							Nodo<T>nuevoSiguiente = actual.darSiguiente().darSiguiente();
+							actual.cambiarSiguiente(nuevoSiguiente);
+							nuevoSiguiente.cambiarAnterior(actual);
+							numElementos--;
+							eliminado = true;
+						}
+					}
+					i++;
+				}
+			}
+		}
+		return eliminado;
+	}
+
 
 
 }
