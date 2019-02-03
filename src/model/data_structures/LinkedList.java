@@ -46,6 +46,8 @@ public class LinkedList<T> implements ILinkedList<T> {
 
 			if(primerNodo == null){
 				primerNodo = new Nodo<T>(elem);
+				primerNodo.cambiarAnterior(null);
+				primerNodo.cambiarSiguiente(null);
 				numElementos++;
 				agrego = true;
 			}
@@ -303,6 +305,17 @@ public class LinkedList<T> implements ILinkedList<T> {
 			}
 		}
 		return eliminado;
+	}
+
+
+	/**
+	 * Metodo que vacia la lista
+	 */
+	@Override
+	public void vaciarLista() {
+		primerNodo = null;
+		numElementos = 0;
+		
 	}
 
 

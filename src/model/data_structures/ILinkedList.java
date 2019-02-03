@@ -63,4 +63,9 @@ public interface ILinkedList<T> extends Iterable<T>{
 	 * @return true si se elimio el objeto, false de lo contrario
 	 */
 	public boolean eliminarObjetoEspecifico(Object objeto);
+	
+	/**
+	 * Metodo que vacia la lista
+	 */
+	public void vaciarLista();
 }
