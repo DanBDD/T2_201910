@@ -1,321 +1,225 @@
 package model.data_structures;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
-public class LinkedList<T> implements ILinkedList<T> {
+public class LinkedList<E>  extends ListaEncadenadaAbstracta<E> {
 
-	private int numElementos;
-
-	private Nodo<T> primerNodo;
-
-	private Nodo<T> ultimoNodo;
-
-	public LinkedList(){
+	/**
+	 * Construye una lista vacia
+	 * <b>post:< /b> se ha inicializado el primer nodo en null
+	 */
+	public LinkedList() 
+	{
 		primerNodo = null;
-		ultimoNodo = null;
-		numElementos = 0;
-	}
-
-	@Override
-	public Iterator<T> iterator() {
-		return new Iterator<T>(numElementos);
-	}
-
-	@Override
-	public Integer getSize() {
-		return numElementos;
+		cantidadElementos = 0;
 	}
 
 	/**
-	 * Metodo que agrega el elemento que entra por parametro en la ultima posicion de la lista
-	 * Verifica los casos que haya: Si la lista es vacía, hace que el elemento nuevo sea el primero. Si la lista contiene ese elemento, no lo agrega.
-	 * @param elem: Elemento a agregar
-	 *  * @return false si no se agrego el elemento, true de lo contrario.
+	 * Se construye una nueva lista cuyo primer nodo  guardarï¿½ al elemento que llega por parï¿½mentro
+	 * @param nPrimero el elemento a guardar en el primer nodo
+	 * @throws NullPointerException si el elemento recibido es nulo
 	 */
-	@Override
-	public boolean agregarElemento(T elem) {
-		boolean agrego = false;
-
-		if(elem == null){
-			throw new NullPointerException();
+	public LinkedList(E nPrimero)throws NullPointerException
+	{
+		if(primerNodo == null)
+		{
+			throw new NullPointerException("Se recibe un elemento nulo");
 		}
-		if(contiene(elem)){
-			agrego = false;
+		primerNodo = new NodoListaDoble<E>(nPrimero);
+		cantidadElementos++;
+	}
+
+	/**
+	 * Agrega un elemento al final de la lista
+	 * Un elemento no se agrega si la lista ya tiene un elemento con el mismo id.
+	 * Se actualiza la cantidad de elementos.
+	 * @param e el elemento que se desea agregar.
+	 * @return true en caso que se agregue el elemento o false en caso contrario. 
+	 * @throws NullPointerException si el elemento es nulo
+	 */
+	public boolean add(E e) throws NullPointerException
+	{
+		boolean bien=false;
+		if(e==null){
+			throw new NullPointerException("El elemento es nulo");
 		}
 		else{
-
-			if(primerNodo == null){
-				primerNodo = new Nodo<T>(elem);
-				primerNodo.cambiarAnterior(null);
-				primerNodo.cambiarSiguiente(null);
-				numElementos++;
-				agrego = true;
+			if(contains(e)){
 			}
-
 			else{
-
-				if(!contiene(elem)){
-					Nodo<T> nuevo = new Nodo<T>(elem);
-					ultimoNodo.cambiarSiguiente(nuevo);
-					nuevo.cambiarAnterior(ultimoNodo);
-					nuevo.cambiarSiguiente(null);
-					numElementos++;
-					agrego = true;
-				}
-			}
-		}
-		return agrego;
-	}
-
-	/**
-	 * Método que agrega un elemento en una posicion determinada de la lista
-	 * No se agrega el elemento si ya existe en la lista
-	 * @param elem elemento a agregar en la lista
-	 * @param pos posicion en la que se quiere agregar el elemento 
-	 * @throws IndexOutOfBoundsException si la posicion deseada es menor que cero o si es mayor o igual al tamano de la lista
-	 * @throws NullPointerException si el elemento a agregar es nulo
-	 * @return true si se agrego, false en caso contrario
-	 */
-	@Override
-	public void agregarElementoPosicion(T elem, int pos) {
-		
-
-		if(elem == null){
-
-			throw new NullPointerException();
-		}
-
-		if(pos < 0 || pos >= numElementos){
-			throw new IndexOutOfBoundsException();
-		}
-
-		if(primerNodo == null){
-			primerNodo = new Nodo<T>(elem);
-			numElementos++;
-		}
-
-		else if(primerNodo.darSiguiente() == null){
-
-			Nodo<T> nuevo = new Nodo<T>(elem);
-			primerNodo.cambiarSiguiente(nuevo);
-			nuevo.cambiarAnterior(primerNodo);
-			nuevo.cambiarSiguiente(null);
-			numElementos++;
-		}
-
-		else if(pos == 0){
-			Nodo<T> nuevo = new Nodo<T>(elem);
-			Nodo<T> siguienteNuevo = primerNodo;
-			primerNodo = nuevo;
-			nuevo.cambiarSiguiente(siguienteNuevo);
-			nuevo.cambiarAnterior(null);
-			siguienteNuevo.cambiarSiguiente(null);
-			siguienteNuevo.cambiarAnterior(nuevo);
-			numElementos++;
-		}
-
-		else if(pos == numElementos-1){
-			Nodo<T> nuevo = new Nodo<T>(elem);
-			agregarElemento(nuevo.darElementoNodo());
-		}
-		
-		else{
-			
-			Nodo<T>actual = primerNodo;
-			
-			int i = 0;
-			
-			while(i<pos-1){
-				actual = actual.darSiguiente();
-				i++;
-			}
-			
-			Nodo<T>siguienteNuevo = actual.darSiguiente();
-			Nodo<T>nuevo = new Nodo<T>(elem);
-			actual.cambiarSiguiente(nuevo);
-			nuevo.cambiarAnterior(actual);
-			nuevo.cambiarSiguiente(siguienteNuevo);
-			siguienteNuevo.cambiarAnterior(nuevo);
-			numElementos++;
-			
-		}
-		
-	}
-
-	/**
-	 * Método que consulta el elemento en la posicion deseada.
-	 * @param indice: posicion en la cual se busca el elemento
-	 * @throws IndexOutOfBoundsException si el indice es menor que cero o es mayor o igual al tamano de la lista.
-	 * @return El elemento en la posicion deseada
-	 */
-	@Override
-	public T consultarElem(int indice) {
-		T elementoBuscado = null;
-		if(indice < 0 || indice >= numElementos){
-			throw new IndexOutOfBoundsException();
-		}
-		else{
-
-			Nodo<T> actual = primerNodo;
-
-			int i = 0;
-
-			while(i<indice){
-				actual = actual.darSiguiente();
-			}
-
-			elementoBuscado = actual.darElementoNodo();
-		}
-		return elementoBuscado;
-	}
-	
-	/**
-	 * Metodo que verifica si el elemento ya existe en la lista
-	 * @param objeto: el elemento que se bussca verificar
-	 * @return true si el elemento existe en la lista, false de lo contrario
-	 */
-	@Override
-	public boolean contiene(Object objeto) {
-		boolean contiene = false;
-		Nodo<T> actual = primerNodo;
-
-		while(actual != null && !contiene){
-
-			if(actual.darElementoNodo().equals(objeto)){
-				contiene = true;
-			}
-
-			if(actual.equals(objeto)){
-				contiene = true;
-			}
-
-			else{
-				actual = actual.darSiguiente();
-			}
-		}
-
-		return contiene;
-	}
-
-	/**
-	 * Metodo que elimina nodo en la posicion deseada.
-	 * @param pos: posicion del nodo
-	 * @throws IndexOutOfBoundsException si la posicion es menor que cero o si es mayor o igual que el tamano de la lista
-	 * @return elemento eliminado
-	 */
-	@Override
-	public T eliminarEnPosicion(int pos) {
-		
-		T eliminado = null;
-		
-		if(pos<0 || pos >= numElementos-1){
-			throw new IndexOutOfBoundsException();
-		}
-		
-		else{
-			
-			Nodo<T>actual = primerNodo;
-			
-			if(pos == 0){
-				eliminado = primerNodo.darElementoNodo();
-				if(primerNodo.darSiguiente() == null){
-					primerNodo = null;
+				if(primerNodo==null){
+					primerNodo= new NodoListaDoble<E>(e);
+					primerNodo.cambiarElemento(e);
+					cantidadElementos++;
+					bien=true;
 				}
 				else{
-					Nodo<T> nuevoPrimero = primerNodo.darSiguiente();
-					primerNodo = nuevoPrimero;
-					nuevoPrimero.cambiarAnterior(null);
+					NodoListaDoble<E> ultimo = (NodoListaDoble<E>) darNodo(cantidadElementos-1);
+					NodoListaDoble<E> nodo = new NodoListaDoble<E>(e);
+					nodo.cambiarAnterior(ultimo);
+					ultimo.cambiarSiguiente(nodo);
+					bien=true;
+					cantidadElementos++;
 				}
-				numElementos--;
-						
 			}
-			else if(pos == numElementos-1){
-				Nodo<T>nuevoUltimo = ultimoNodo.darAnterior();
-				eliminado = ultimoNodo.darElementoNodo();
-				nuevoUltimo.cambiarSiguiente(null);
-				numElementos--;
+		}
+		return bien;
+	}
+	/**
+	 * Agrega un elemento al final de la lista. Actualiza la cantidad de elementos.
+	 * Un elemento no se agrega si la lista ya tiene un elemento con el mismo id
+	 * @param elemento el elemento que se desea agregar.
+	 * @return true en caso que se agregue el elemento o false en caso contrario. 
+	 * @throws NullPointerException si el elemento es nulo
+	 */
+	public void add(int index, E elemento) throws NullPointerException, IndexOutOfBoundsException
+	{
+		if(elemento==null){
+			throw new NullPointerException("El elemento es nulo");
+		}
+		else if(index<0 || index>size()){
+			throw new IndexOutOfBoundsException("La posicion no es valida");
+		}
+		else{
+			if (contains(elemento)){
+
 			}
 			else{
-				int i = 0;
-				
-				while(i<pos-1){
-					
-					i++;
-					actual = actual.darSiguiente();
+				NodoListaDoble<E> nodo= new NodoListaDoble<E>(elemento);
+				if(index==0){
+					nodo.cambiarSiguiente(primerNodo);
+					primerNodo= nodo;
+
 				}
-				Nodo<T> siguienteNuevo = actual.darSiguiente().darSiguiente();
-				eliminado = actual.darSiguiente().darElementoNodo();
-				actual.cambiarSiguiente(siguienteNuevo);
-				numElementos--;
+				else if(index==size()){
+					this.add(elemento);
+					cantidadElementos--;
+				}
+				else{
+					NodoListaDoble<E> antes= (NodoListaDoble<E>) darNodo(index-1);
+					NodoListaDoble<E> despues= (NodoListaDoble<E>) darNodo(index);
+					nodo.cambiarSiguiente(despues);
+					nodo.cambiarAnterior(antes);
+					despues.cambiarAnterior(nodo);
+					antes.cambiarSiguiente(nodo);
+				}
+				cantidadElementos++;
 			}
 		}
-		
+	}
+
+	/**
+	 * Mï¿½todo que retorna el iterador de la lista.
+	 * @return el iterador de la lista.
+	 */
+	public ListIterator<E> listIterator() 
+	{
+		return new IteradorLista<E>((NodoListaDoble<E>) primerNodo);
+	}
+
+	/**
+	 * Mï¿½todo que retorna el iterador de la lista desde donde se indica.
+	 * @param index ï¿½ndice desde se quiere comenzar a iterar.
+	 * @return el iterador de la lista.
+	 * @throws IndexOutOfBoundsException si index < 0 o index >= size()
+	 */
+	public ListIterator<E> listIterator(int index) throws IndexOutOfBoundsException
+	{
+		if(index< 0 || index >= size()){
+			throw new IndexOutOfBoundsException("El ï¿½ndice buscado estï¿½ por fuera de la lista.");
+		}
+		return new IteradorLista<E>((NodoListaDoble<E>) darNodo(index));
+	}
+
+	/**
+	 * Elimina el nodo que contiene al objeto que llega por parï¿½metro.
+	 * Actualiza la cantidad de elementos.
+	 * @param objeto el objeto que se desea eliminar. objeto != null
+	 * @return true en caso que exista el objeto y se pueda eliminar o false en caso contrario
+	 */
+	public boolean remove(Object o) 
+	{
+		boolean eliminado=false;
+		if(isEmpty()){
+			eliminado=false;
+		}
+		else if(!contains(o)){
+			eliminado=false;
+		}
+		else{
+			if(indexOf(o)==0){
+				primerNodo=primerNodo.darSiguiente();
+			}
+			else if(indexOf(o)==cantidadElementos|| indexOf(o)+1==cantidadElementos){
+				NodoListaDoble<E> antes = (NodoListaDoble<E>) darNodo(indexOf(o)-1);
+				antes.cambiarSiguiente(null);
+			}
+			else{
+				NodoListaDoble<E> antes = (NodoListaDoble<E>) darNodo(indexOf(o)-1);
+				NodoListaDoble<E> despues = (NodoListaDoble<E>) darNodo(indexOf(o)+1);
+				antes.cambiarSiguiente(despues);
+				despues.cambiarAnterior(antes);
+			}
+			eliminado=true;
+			cantidadElementos--;
+
+		}			
 		return eliminado;
 	}
 
 	/**
-	 * Metodo que elimina el objeto que llega por parametro
-	 * @param objeto: objeto que se busca eliminar
-	 * @return true si se elimio el objeto, false de lo contrario
+	 * Elimina el nodo en la posiciï¿½n por parï¿½metro.
+	 * Actualiza la cantidad de elementos.
+	 * @param pos la posiciï¿½n que se desea eliminar
+	 * @return el elemento eliminado
+	 * @throws IndexOutOfBoundsException si index < 0 o index >= size()
 	 */
-	@Override
-	public boolean eliminarObjetoEspecifico(Object objeto) {
-
-		boolean eliminado = false;
-		
-		if(primerNodo != null){
-			if(contiene(objeto)){
-				
-				int i = 0;
-				Nodo<T>actual = primerNodo;
-				
-				while(i<numElementos-1 && !eliminado){
-					
-					if(actual.darElementoNodo().equals(objeto)){
-						if(numElementos-1 == 0){
-							primerNodo = null;
-							numElementos--;
-							eliminado = true;
-						}
-						else{
-							Nodo<T> nuevoPrimero = primerNodo.darSiguiente();
-							primerNodo = nuevoPrimero;
-							nuevoPrimero.cambiarAnterior(null);
-							numElementos--;
-							eliminado = true;
-						}
-					}
-					else if(i == numElementos - 1){
-						Nodo<T>nuevoUltimo = ultimoNodo.darAnterior();
-						nuevoUltimo.cambiarSiguiente(null);
-						numElementos--;
-						eliminado = true;
-					}
-					else{
-						if(actual.darElementoNodo().equals(actual.darSiguiente().darElementoNodo())){
-							Nodo<T>nuevoSiguiente = actual.darSiguiente().darSiguiente();
-							actual.cambiarSiguiente(nuevoSiguiente);
-							nuevoSiguiente.cambiarAnterior(actual);
-							numElementos--;
-							eliminado = true;
-						}
-					}
-					i++;
-				}
-			}
+	public E remove(int index) 
+	{
+		if(index<0 || index>=size()){
+			throw new IndexOutOfBoundsException("La posicion no es valida");
 		}
-		return eliminado;
+		E elemento=null;
+		if(isEmpty()){
+			elemento=null;
+		}
+		else{
+			if(index==0){
+				elemento=primerNodo.darElemento();
+				primerNodo=primerNodo.darSiguiente();
+			}
+			else if(index==size()-1){
+				elemento=darNodo(index).darElemento();
+				NodoListaDoble<E> antes = (NodoListaDoble<E>) darNodo(index-1);
+				antes.cambiarSiguiente(null);
+			}
+			else{
+				NodoListaDoble<E> nodo = (NodoListaDoble<E>) darNodo(index);
+				elemento=nodo.darElemento();
+				NodoListaDoble<E> antes = (NodoListaDoble<E>) darNodo(index-1);
+				NodoListaDoble<E> despues = (NodoListaDoble<E>) darNodo(index+1);
+				antes.cambiarSiguiente(despues);
+				despues.cambiarAnterior(antes);
+			}
+			cantidadElementos--;
+		}
+		return elemento;
 	}
 
-
-	/**
-	 * Metodo que vacia la lista
-	 */
 	@Override
-	public void vaciarLista() {
-		primerNodo = null;
-		numElementos = 0;
-		
+	public boolean retainAll(Collection<?> c) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public List<E> subList(int fromIndex, int toIndex) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 
