@@ -5,13 +5,29 @@ package model.vo;
  */
 public class VOMovingViolations {
 
+	private int id;
+	private String location;
+	private String date;
+	private int total;
+	private String indicator;
+	private String description;
+	
+	public VOMovingViolations(int id, String l, String d, int t, String i,String de)
+	{
+		this.id=id;
+		location=l;
+		date=d;
+		total=t;
+		indicator=i;
+		description=de;
+	}
 	
 	/**
 	 * @return id - Identificador único de la infracción
 	 */
 	public int objectId() {
 		// TODO Auto-generated method stub
-		return 0;
+		return id;
 	}	
 	
 	
@@ -20,7 +36,7 @@ public class VOMovingViolations {
 	 */
 	public String getLocation() {
 		// TODO Auto-generated method stub
-		return 0;
+		return location;
 	}
 
 	/**
@@ -28,7 +44,7 @@ public class VOMovingViolations {
 	 */
 	public String getTicketIssueDate() {
 		// TODO Auto-generated method stub
-		return "";
+		return date;
 	}
 	
 	/**
@@ -36,7 +52,7 @@ public class VOMovingViolations {
 	 */
 	public int getTotalPaid() {
 		// TODO Auto-generated method stub
-		return "";
+		return total;
 	}
 	
 	/**
@@ -44,7 +60,7 @@ public class VOMovingViolations {
 	 */
 	public String  getAccidentIndicator() {
 		// TODO Auto-generated method stub
-		return "";
+		return indicator;
 	}
 		
 	/**
@@ -52,6 +68,6 @@ public class VOMovingViolations {
 	 */
 	public String  getViolationDescription() {
 		// TODO Auto-generated method stub
-		return "";
+		return description;
 	}
 }

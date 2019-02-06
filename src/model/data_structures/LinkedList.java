@@ -222,6 +222,11 @@ public class LinkedList<E>  extends ListaEncadenadaAbstracta<E> {
 		return null;
 	}
 
+	public int getSize() {
+		// TODO Auto-generated method stub
+		return cantidadElementos;
+	}
+
 
 
 }
