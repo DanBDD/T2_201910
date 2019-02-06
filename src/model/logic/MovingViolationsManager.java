@@ -1,3 +1,4 @@
+// Este codigo fue basado en el codigo encongtrado en ....
 package model.logic;
 
 import java.io.FileReader;
@@ -13,24 +14,35 @@ import model.data_structures.LinkedList;
 
 public class MovingViolationsManager implements IMovingViolationsManager {
 
-	private LinkedList lista;
+	private LinkedList<VOMovingViolations> lista;
 
 	public MovingViolationsManager()
 	{
-		lista=new LinkedList<>();
+		lista=new LinkedList<VOMovingViolations>();
 	}
 	public void loadMovingViolations(String movingViolationsFile){
 		// TODO Auto-generated method stub
 		try {
 			FileReader f= new FileReader(movingViolationsFile);
 			CSVReader reader = new CSVReaderBuilder(f).withSkipLines(1).build();
-			List<String []> info=reader.readAll();
-			for(String[] linea:info)
+			List<String[]> lineas=reader.readAll();
+			for(int i=0;i<lineas.size();++i)
 			{
-				for(String dato:linea)
+				String datos = null;
+				for(int j=0;j<lineas.get(i).length;++j)
 				{
-					lista.add(dato);
+					datos+=lineas.get(i)[j];
 				}
+				String [] s =datos.split(",");
+				int id= Integer.parseInt(s[14]);
+				String loc= s[2];
+				String date=s[13];
+				int total=Integer.parseInt(s[9]);
+				String indicator=s[12];
+				String des=s[15];
+
+				lista.add(new VOMovingViolations(id, loc, date, total, indicator, des));
+
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -41,8 +53,15 @@ public class MovingViolationsManager implements IMovingViolationsManager {
 
 	@Override
 	public LinkedList <VOMovingViolations> getMovingViolationsByViolationCode (String violationCode) {
-		// TODO Auto-generated method stub
-		return null;
+		LinkedList<VOMovingViolations> l= new LinkedList<VOMovingViolations>();
+		for(int i=0;i<lista.size();i++)
+		{
+			if(lista.get(i).objectId()==Integer.parseInt(violationCode))
+			{
+				l.add(lista.get(i));
+			}
+		}
+		return l;
 	}
 
 	@Override
