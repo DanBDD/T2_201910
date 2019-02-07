@@ -1,6 +1,7 @@
 // Este codigo fue basado en el codigo encongtrado en ....
 package model.logic;
 
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
@@ -21,38 +22,37 @@ public class MovingViolationsManager implements IMovingViolationsManager {
 		lista=new LinkedList<VOMovingViolations>();
 	}
 	public void loadMovingViolations(String movingViolationsFile){
-		// TODO Auto-generated method stub
+
 		try {
-			FileReader f= new FileReader(movingViolationsFile);
-			CSVReader reader = new CSVReaderBuilder(f).withSkipLines(1).build();
-			List<String[]> lineas=reader.readAll();
-			for(int i=0;i<lineas.size();++i)
-			{
-				String datos = null;
-				for(int j=0;j<lineas.get(i).length;++j)
-				{
-					datos+=lineas.get(i)[j];
-				}
-				String [] s =datos.split(",");
-				int id= Integer.parseInt(s[14]);
-				String loc= s[2];
-				String date=s[13];
-				int total=Integer.parseInt(s[9]);
-				String indicator=s[12];
-				String des=s[15];
-
-				lista.add(new VOMovingViolations(id, loc, date, total, indicator, des));
-
+			CSVReader lector = new CSVReader(new FileReader(movingViolationsFile));
+			String [] nextLine = lector.readNext();
+			while((nextLine = lector.readNext()) != null){
+				String id = nextLine[0];
+				int idObjeto = Integer.parseInt(id);
+				String location = nextLine[2];
+				String fecha = nextLine[14];
+				String total = nextLine[9];
+				int totalObjeto = Integer.parseInt(total);
+				String indicator = nextLine[12];
+				String description = nextLine[15];
+				lista.add(new VOMovingViolations(idObjeto, location, fecha, totalObjeto, indicator, description));
+				
 			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-
+	/**
+	 * Metodo que recolecta objetos VOMovingViolations según el código de violacion. (Columna VIOLATIONCODE del archivo CSV)
+	 * @param violationCode: el codigo para buscar los objetos VOMovingViolations
+	 * @return una lista con todos los objetos VOMovingViolations que tengan el código a buscar
+	 */
 	@Override
 	public LinkedList <VOMovingViolations> getMovingViolationsByViolationCode (String violationCode) {
+		
 		LinkedList<VOMovingViolations> l= new LinkedList<VOMovingViolations>();
 		for(int i=0;i<lista.size();i++)
 		{
@@ -63,11 +63,23 @@ public class MovingViolationsManager implements IMovingViolationsManager {
 		}
 		return l;
 	}
-
+	
+	/**
+	 * Metodo que recolecta objetos VOMovingViolations según el indicador de accidente. (Columna ACCIDENTINDICATOR del archivo CSV)
+	 * @param accidentIndicator: el indicador para buscar los objetos VOMovingViolations
+	 * @return una lista con todos los objetos VOMovingViolations que tengan el indicador a buscar
+	 */
 	@Override
 	public LinkedList <VOMovingViolations> getMovingViolationsByAccident(String accidentIndicator) {
-		// TODO Auto-generated method stub
-		return null;
+		LinkedList<VOMovingViolations> l= new LinkedList<VOMovingViolations>();
+		for(int i=0;i<lista.size();i++)
+		{
+			if(lista.get(i).getAccidentIndicator().equals(accidentIndicator))
+			{
+				l.add(lista.get(i));
+			}
+		}
+		return l;
 	}	
 
 

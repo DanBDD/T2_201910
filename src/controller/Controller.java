@@ -7,6 +7,7 @@ import model.vo.VOMovingViolations;
 
 public class Controller {
 
+	private static String rutaCSV = "./data/Moving_Violations_Issued_in_January_2018.csv";
 	/**
 	 * Reference to the services manager
 	 */
@@ -14,7 +15,7 @@ public class Controller {
 	private static IMovingViolationsManager  manager = new MovingViolationsManager();
 	
 	public static void loadMovingViolations() {
-		
+		manager.loadMovingViolations(rutaCSV);
 	}
 	
 	public static LinkedList <VOMovingViolations> getMovingViolationsByViolationCode (String violationCode) {

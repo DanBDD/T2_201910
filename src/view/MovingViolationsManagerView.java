@@ -7,6 +7,15 @@ import model.data_structures.ILinkedList;
 import model.data_structures.LinkedList;
 import model.vo.VOMovingViolations;
 
+/**
+ * El código que se usó para desarrollar las estructuras de datos en el paquete model.data_structures 
+ * fue sacado del nivel 9 hecho en la clase de APO2 honores por los integranes del grupo (ambos tomaron
+ * la misma clase el semestre pasado)
+ * 
+ * El código para cargar los datos del archivo CSV fue tomado de http://opencsv.sourceforge.net/#reading_into_an_array_of_strings
+ * @author dagar
+ *
+ */
 public class MovingViolationsManagerView 
 {
 	public static void main(String[] args) 
